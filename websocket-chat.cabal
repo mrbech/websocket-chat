@@ -9,9 +9,9 @@ version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/mrbech/websocket-chat#readme>
 homepage:       https://github.com/mrbech/websocket-chat#readme
 bug-reports:    https://github.com/mrbech/websocket-chat/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2020 Author name here
+author:         mrbech
+maintainer:     mrbech
+copyright:      2020 mrbech
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -32,7 +32,7 @@ library
       Paths_websocket_chat
   hs-source-dirs:
       src
-  ghc-options: -Wall -Wincomplete-uni-patterns -Wpartial-fields
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -Werror
   build-depends:
       base >=4.7 && <5
     , containers >=0.6 && <1
