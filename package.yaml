@@ -1,0 +1,63 @@
+name:                websocket-chat
+version:             0.1.0.0
+github:              "mrbech/websocket-chat"
+license:             BSD3
+author:              "mrbech"
+maintainer:          "mrbech"
+copyright:           "2020 mrbech"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/mrbech/websocket-chat#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- websockets >= 0.12 && < 0.13
+- containers >= 0.6 && < 1
+- text >= 1.2 && < 2
+
+
+library:
+  source-dirs: src
+  ghc-options: -Wall -Wincomplete-uni-patterns -Wpartial-fields
+
+executables:
+  server-exe:
+    main:                Main.hs
+    source-dirs:         server
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - websocket-chat
+
+  client-exe:
+    main:                Main.hs
+    source-dirs:         client
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - websocket-chat
+
+tests:
+  websocket-chat-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - websocket-chat

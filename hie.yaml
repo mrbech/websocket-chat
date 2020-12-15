@@ -1,0 +1,19 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "websocket-chat:lib"
+
+    - path: "./client/Main.hs"
+      component: "websocket-chat:exe:client-exe"
+
+    - path: "./client/Paths_websocket_chat.hs"
+      component: "websocket-chat:exe:client-exe"
+
+    - path: "./server/Main.hs"
+      component: "websocket-chat:exe:server-exe"
+
+    - path: "./server/Paths_websocket_chat.hs"
+      component: "websocket-chat:exe:server-exe"
+
+    - path: "./test"
+      component: "websocket-chat:test:websocket-chat-test"
