@@ -14,6 +14,7 @@ import Control.Exception (finally)
 
 import qualified Server.Client as Client
 import Text.Read (readMaybe)
+import Data.Functor ((<&>))
 
 type ServerState = Map.Map Client.Username Client.Client
 
@@ -21,10 +22,10 @@ newServerState :: ServerState
 newServerState = Map.empty
 
 receiveMessage :: WS.Connection -> IO Text
-receiveMessage conn = WS.receiveData conn
+receiveMessage = WS.receiveData
 
 readConnections :: MVar ServerState -> IO [WS.Connection]
-readConnections state = do readMVar state >>= return . fmap Client.connection . Map.elems
+readConnections state = readMVar state <&> fmap Client.connection . Map.elems
 
 addClient :: MVar ServerState -> Client.Client -> IO ()
 addClient state client = modifyMVar_ state $ \s -> do 
@@ -48,7 +49,7 @@ broadcast message conns = do
 handleClientMessage :: MVar ServerState -> Client.Client -> IO ()
 handleClientMessage state client = do
     msg <- receiveMessage $ Client.connection client :: IO Text
-    let message = (Client.usernameText client <> ": " <> msg)
+    let message = Client.usernameText client <> ": " <> msg
     conns <- readConnections state
     broadcast message conns
 
@@ -56,8 +57,8 @@ handleClientMessage state client = do
 startServer :: IO ()
 startServer = do
     address <- Maybe.fromMaybe "0.0.0.0" <$> Environment.lookupEnv "SERVER_ADDRESS"
-    port <-  Maybe.fromMaybe 1337 . (>>= readMaybe) <$> Environment.lookupEnv "SERVER_PORT"
-    putStrLn $ "Starting server " ++ address ++ ":" ++ (show port)
+    port <- Maybe.fromMaybe 1337 . (>>= readMaybe) <$> Environment.lookupEnv "SERVER_PORT"
+    putStrLn $ "Starting server " ++ address ++ ":" ++ show port
     state <- newMVar newServerState
     WS.runServer address port $ \pending -> do
         conn <- WS.acceptRequest pending
@@ -69,6 +70,6 @@ startServer = do
             else do
                 conns <- readConnections state
                 let client = Client.Client username conn
-                broadcast (Client.usernameText client <> " joined") $ conns
+                broadcast (Client.usernameText client <> " joined") conns
                 addClient state client
                 flip finally (removeClient state client) $ forever $ handleClientMessage state client

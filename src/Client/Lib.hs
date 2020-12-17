@@ -27,7 +27,7 @@ readSendLoop conn = do
 startClient :: IO ()
 startClient = do
     address <- Maybe.fromMaybe "0.0.0.0" <$> Environment.lookupEnv "SERVER_ADDRESS"
-    port <-  Maybe.fromMaybe 1337 . (>>= readMaybe) <$> Environment.lookupEnv "SERVER_PORT"
+    port <- Maybe.fromMaybe 1337 . (>>= readMaybe) <$> Environment.lookupEnv "SERVER_PORT"
     putStrLn $ "Connecting to " ++ address ++ ":" ++ show port
     WS.runClient address port "/" $ \conn -> do
         putStrLn "Connected!"
