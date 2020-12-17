@@ -53,6 +53,11 @@ handleClientMessage state client = do
     conns <- readConnections state
     broadcast message conns
 
+broadcastJoin :: Client.Client -> [WS.Connection] -> IO ()
+broadcastJoin client = broadcast (Client.usernameText client <> " joined")
+
+broadcastLeave :: Client.Client -> [WS.Connection] -> IO ()
+broadcastLeave client = broadcast (Client.usernameText client <> " left")
 
 startServer :: IO ()
 startServer = do
@@ -70,6 +75,6 @@ startServer = do
             else do
                 conns <- readConnections state
                 let client = Client.Client username conn
-                broadcast (Client.usernameText client <> " joined") conns
+                broadcastJoin client conns
                 addClient state client
-                flip finally (removeClient state client) $ forever $ handleClientMessage state client
+                flip finally (removeClient state client >> broadcastLeave client conns) $ forever $ handleClientMessage state client
