@@ -45,7 +45,6 @@ broadcast message conns = do
     T.putStrLn message
     forM_ conns $ \c -> WS.sendTextData c message
 
-
 handleClientMessage :: MVar ServerState -> Client.Client -> IO ()
 handleClientMessage state client = do
     msg <- receiveMessage $ Client.connection client :: IO Text
@@ -77,4 +76,5 @@ startServer = do
                 let client = Client.Client username conn
                 broadcastJoin client conns
                 addClient state client
-                flip finally (removeClient state client >> broadcastLeave client conns) $ forever $ handleClientMessage state client
+                finally (forever $ handleClientMessage state client)
+                    (removeClient state client >> broadcastLeave client conns)
