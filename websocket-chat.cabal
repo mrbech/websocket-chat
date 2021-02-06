@@ -30,7 +30,6 @@ library
       Client.Main
       Messages.Client
       Messages.Server
-      Messages.Utils
       Server.Core
       Server.Lib
       Server.Main
