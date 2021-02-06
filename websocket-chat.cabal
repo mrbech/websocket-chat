@@ -25,7 +25,9 @@ source-repository head
 
 library
   exposed-modules:
+      Client.Core
       Client.Lib
+      Client.Main
       Messages.Client
       Messages.Server
       Messages.Utils
@@ -42,6 +44,7 @@ library
     , base >=4.7 && <5
     , bytestring >=0.10 && <1
     , containers >=0.6 && <1
+    , mtl >=2 && <3
     , text >=1.2 && <2
     , websockets >=0.12 && <0.13
   default-language: Haskell2010
@@ -58,6 +61,7 @@ executable client-exe
     , base >=4.7 && <5
     , bytestring >=0.10 && <1
     , containers >=0.6 && <1
+    , mtl >=2 && <3
     , text >=1.2 && <2
     , websocket-chat
     , websockets >=0.12 && <0.13
@@ -75,6 +79,7 @@ executable server-exe
     , base >=4.7 && <5
     , bytestring >=0.10 && <1
     , containers >=0.6 && <1
+    , mtl >=2 && <3
     , text >=1.2 && <2
     , websocket-chat
     , websockets >=0.12 && <0.13
@@ -93,6 +98,7 @@ test-suite websocket-chat-test
     , base >=4.7 && <5
     , bytestring >=0.10 && <1
     , containers >=0.6 && <1
+    , mtl >=2 && <3
     , text >=1.2 && <2
     , websocket-chat
     , websockets >=0.12 && <0.13

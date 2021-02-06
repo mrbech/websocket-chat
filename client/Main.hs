@@ -1,6 +1,6 @@
 module Main where
 
-import qualified Client.Lib as Lib
+import Client.Main(startClient)
 
 main :: IO ()
-main = Lib.startClient
+main = startClient
