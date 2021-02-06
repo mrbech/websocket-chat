@@ -31,9 +31,9 @@ library
       Messages.Client
       Messages.Server
       Messages.Utils
-      Server.Client
+      Server.Core
       Server.Lib
-      Server.ServerState
+      Server.Main
   other-modules:
       Paths_websocket_chat
   hs-source-dirs:
