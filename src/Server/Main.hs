@@ -14,6 +14,7 @@ import Server.Lib
 import Server.Core
 import Control.Monad.Reader (ReaderT(runReaderT), MonadReader(ask))
 import Control.Monad.IO.Class (MonadIO(liftIO))
+import Server.Log (Logging(logInfo))
 
 handleClientConnection :: ClientConnectionEnv ()
 handleClientConnection = do
@@ -31,7 +32,7 @@ startServer :: IO ()
 startServer = do
     address <- Maybe.fromMaybe "0.0.0.0" <$> Environment.lookupEnv "SERVER_ADDRESS"
     port <- Maybe.fromMaybe 1337 . (>>= readMaybe) <$> Environment.lookupEnv "SERVER_PORT"
-    putStrLn $ "Starting server " ++ address ++ ":" ++ show port
+    logInfo $ "Starting server " ++ address ++ ":" ++ show port
     state <- initState
     WS.runServer address port $ \pending -> do
         conn <- WS.acceptRequest pending

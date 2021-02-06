@@ -7,8 +7,9 @@ import Control.Monad.Reader (forM_, MonadIO(liftIO), asks, ReaderT)
 import qualified Data.Aeson as Aeson
 import Data.Text (Text)
 import Control.Concurrent (newMVar, modifyMVar_, modifyMVar, readMVar, MVar)
-import qualified Data.Text.IO as T
 import Data.IORef (readIORef, writeIORef, newIORef, IORef)
+import Server.Log (Logging(..))
+import System.IO (hPrint, stderr)
 
 type ServerState = MVar (Map.Map Text WS.Connection)
 
@@ -33,22 +34,27 @@ class Monad m => ClientConnection m where
     sendMessage :: Aeson.ToJSON a => a -> m ()
     broadcast :: Aeson.ToJSON a => a -> m ()
     tryJoin :: Text -> m Bool
-    logInfo :: Text -> m ()
     leave :: m ()
 
 instance ClientConnection (ReaderT ClientConnectionCtx IO) where
     recieveMessage = do 
         conn <- asks getConn
-        liftIO $ Aeson.decode <$> WS.receiveData conn
+        msg <- liftIO $ WS.receiveData conn
+        logInfo ("recieveMessage", msg)
+        return $ Aeson.decode msg
 
     sendMessage msg = do
         conn <- asks getConn
-        liftIO $ WS.sendTextData conn (Aeson.encode msg)
+        let m = Aeson.encode msg
+        logInfo ("sendMessage", m)
+        liftIO $ WS.sendTextData conn m
 
     broadcast msg = do
         state <- asks getServerState
         conns <- liftIO $ Map.elems <$> readMVar state
-        forM_ conns $ \c -> liftIO $ WS.sendTextData c (Aeson.encode msg)
+        let m = Aeson.encode msg
+        logInfo ("broadcast", m)
+        forM_ conns $ \c -> liftIO $ WS.sendTextData c m
 
     tryJoin username = do
         state <- asks getServerState
@@ -65,8 +71,6 @@ instance ClientConnection (ReaderT ClientConnectionCtx IO) where
         else
             return result
 
-    logInfo = liftIO . T.putStrLn
-
     leave = do
         state <- asks getServerState
         username <- asks getUsername
@@ -74,3 +78,13 @@ instance ClientConnection (ReaderT ClientConnectionCtx IO) where
         case u of
             Nothing -> return ()
             Just u' -> liftIO $ modifyMVar_ state $ return . Map.delete u'
+
+instance Logging (ReaderT ClientConnectionCtx IO) where
+    printStdout msg = do
+        username <- asks getUsername
+        u <- liftIO $ readIORef username
+        liftIO . print $ (u, msg)
+    printStderr msg = do
+        username <- asks getUsername
+        u <- liftIO $ readIORef username
+        liftIO . hPrint stderr $ (u, msg)
