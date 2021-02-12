@@ -28,6 +28,7 @@ library
       Client.Core
       Client.Lib
       Client.Main
+      Client.Ui
       Messages.Client
       Messages.Server
       Server.Core
@@ -42,10 +43,12 @@ library
   build-depends:
       aeson >=1.4 && <2
     , base >=4.7 && <5
+    , brick >=0.50 && <0.61
     , bytestring >=0.10 && <1
     , containers >=0.6 && <1
     , mtl >=2 && <3
     , text >=1.2 && <2
+    , vty >=5 && <6
     , websockets >=0.12 && <0.13
   default-language: Haskell2010
 
@@ -59,10 +62,12 @@ executable client-exe
   build-depends:
       aeson >=1.4 && <2
     , base >=4.7 && <5
+    , brick >=0.50 && <0.61
     , bytestring >=0.10 && <1
     , containers >=0.6 && <1
     , mtl >=2 && <3
     , text >=1.2 && <2
+    , vty >=5 && <6
     , websocket-chat
     , websockets >=0.12 && <0.13
   default-language: Haskell2010
@@ -77,10 +82,12 @@ executable server-exe
   build-depends:
       aeson >=1.4 && <2
     , base >=4.7 && <5
+    , brick >=0.50 && <0.61
     , bytestring >=0.10 && <1
     , containers >=0.6 && <1
     , mtl >=2 && <3
     , text >=1.2 && <2
+    , vty >=5 && <6
     , websocket-chat
     , websockets >=0.12 && <0.13
   default-language: Haskell2010
@@ -96,10 +103,12 @@ test-suite websocket-chat-test
   build-depends:
       aeson >=1.4 && <2
     , base >=4.7 && <5
+    , brick >=0.50 && <0.61
     , bytestring >=0.10 && <1
     , containers >=0.6 && <1
     , mtl >=2 && <3
     , text >=1.2 && <2
+    , vty >=5 && <6
     , websocket-chat
     , websockets >=0.12 && <0.13
   default-language: Haskell2010

@@ -27,6 +27,8 @@ dependencies:
 - aeson >= 1.4 && < 2
 - bytestring >= 0.10 && < 1
 - mtl >= 2 && < 3
+- brick >= 0.50 && < 0.61
+- vty >= 5 && < 6
 
 
 library:

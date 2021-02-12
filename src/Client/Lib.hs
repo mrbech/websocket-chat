@@ -22,15 +22,12 @@ listenForMessage = do
 readSendLoop :: Client m => m ()
 readSendLoop = do
     msg <- getUserLine
-    if msg == ":quit" then
-        return ()
-    else do
-        sendMessage $ CM.ChatMessage msg
-        readSendLoop
+    sendMessage $ CM.ChatMessage msg
+    readSendLoop
 
 requestUsernameHandler :: Client m => m ()
 requestUsernameHandler = do
-    sendUserLine "Please enter your name:"
+    sendUserLine "Please enter your name"
     username <- getUserLine
     sendMessage $ CM.RequestUsername username
     msg <- recieveMessage
@@ -38,7 +35,7 @@ requestUsernameHandler = do
         Nothing ->
             sendUserLine "Failed to decode RequestUsernameResponse"
         Just SM.UsernameAccepted -> 
-            sendUserLine "Username accepted, welcome to the chat!"
+            sendUserLine $ "Username accepted, welcome to the chat " <> username <> "!"
         Just SM.UsernameAlreadyTaken -> do
             sendUserLine "Name already taken, please try again"
             requestUsernameHandler
