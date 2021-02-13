@@ -55,7 +55,7 @@ appDraw AppState { input, messages, focusRing } =  [
         )
     ]
     where
-        messagesWidget = F.withFocusRing focusRing (L.renderList (\_ t -> A.txt t)) messages
+        messagesWidget = F.withFocusRing focusRing (L.renderList (\_ t -> A.padLeft A.Max $ A.padRight A.Max $ A.txt t)) messages
         inputWidget = F.withFocusRing focusRing (E.renderEditor (A.txt . T.unlines)) input
 
 appHandleEvent :: C.BChan T.Text -> AppState -> A.BrickEvent n Event -> A.EventM Names (A.Next AppState)
