@@ -29,6 +29,7 @@ dependencies:
 - mtl >= 2 && < 3
 - brick >= 0.50 && < 0.61
 - vty >= 5 && < 6
+- vector >= 0.12 && < 1
 
 
 library:

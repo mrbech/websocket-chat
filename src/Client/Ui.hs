@@ -16,16 +16,18 @@ import qualified Graphics.Vty
 import Client.Core (UiClientCtx(getInputChan, getEventChan), ClientEnv)
 import Control.Monad.Reader (asks)
 import Control.Monad (void)
+import qualified Brick.Widgets.List as L
+import qualified Data.Vector as V
 
 type Event = T.Text
 
 data Names = 
-    MessagesViewport
+    Messages
     | InputEditor
     deriving (Eq, Ord, Show)
 
 data AppState = AppState {
-    messages :: [T.Text],
+    messages :: L.List Names T.Text,
     input :: E.Editor T.Text Names
 }
 
@@ -34,7 +36,7 @@ initialInput = E.editorText InputEditor (Just 1) ""
 
 initialState :: AppState
 initialState = AppState {
-    messages = [],
+    messages = L.list Messages V.empty 1,
     input = initialInput
 }
 
@@ -49,17 +51,17 @@ appDraw AppState { input, messages } =  [
         )
     ]
     where
-        messagesWidget = A.viewport MessagesViewport A.Vertical $ A.vBox (map A.txtWrap messages)
+        messagesWidget = L.renderList (\_ t -> A.txt t) False messages
         inputWidget = E.renderEditor (A.txt . T.unlines) True input
 
 appHandleEvent :: C.BChan T.Text -> AppState -> A.BrickEvent n Event -> A.EventM Names (A.Next AppState)
-appHandleEvent inputChan st@AppState{ input } (A.VtyEvent (V.EvKey V.KEnter [])) = 
+appHandleEvent inputChan st@AppState{ input, messages } (A.VtyEvent (V.EvKey V.KEnter [])) = 
     case E.getEditContents input of
         [":quit"] -> M.halt st
         [":clear"] -> 
             M.continue $ st {
                 input = initialInput,
-                messages = []
+                messages = L.listClear messages
             }
         _ -> do
             void $ liftIO $ C.writeBChanNonBlocking inputChan $ getInput input
@@ -72,7 +74,8 @@ appHandleEvent _ st@AppState { input } (A.VtyEvent e) = do
     M.continue st { input = editor }
 
 appHandleEvent _ st@AppState { messages } (A.AppEvent m) =
-    M.continue st { messages = messages <> [m] }
+    M.continue st { messages = L.listMoveTo len $ L.listInsert len m messages }
+        where len = length messages
 
 appHandleEvent _ st _ = M.continue st
 
