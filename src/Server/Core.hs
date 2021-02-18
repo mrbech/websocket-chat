@@ -35,6 +35,7 @@ class Monad m => ClientConnection m where
     broadcast :: Aeson.ToJSON a => a -> m ()
     tryJoin :: Text -> m Bool
     leave :: m ()
+    connectedUsers :: m [Text]
 
 instance ClientConnection (ReaderT ClientConnectionCtx IO) where
     recieveMessage = do 
@@ -78,6 +79,11 @@ instance ClientConnection (ReaderT ClientConnectionCtx IO) where
         case u of
             Nothing -> return ()
             Just u' -> liftIO $ modifyMVar_ state $ return . Map.delete u'
+
+    connectedUsers = do
+        state <- asks getServerState
+        s <- liftIO $ readMVar state
+        return $ Map.keys s
 
 instance Logging (ReaderT ClientConnectionCtx IO) where
     printStdout msg = do

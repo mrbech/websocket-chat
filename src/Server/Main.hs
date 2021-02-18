@@ -9,7 +9,6 @@ import Control.Monad (forever)
 import Control.Exception (finally)
 
 import Text.Read (readMaybe)
-import qualified Messages.Server as SM
 import Server.Lib
 import Server.Core
 import Control.Monad.Reader (ReaderT(runReaderT), MonadReader(ask))
@@ -23,7 +22,6 @@ handleClientConnection = do
         Nothing -> return ()
         Just u -> do
             ctx <- ask
-            broadcast $ SM.ChatUserJoined $ SM.UserJoined { SM.usernameJoined = u }
             liftIO $ finally 
                 (forever $ runReaderT (handleClientMessage u) ctx)
                 (runReaderT (handleClientLeave u) ctx)

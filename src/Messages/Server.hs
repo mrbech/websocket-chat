@@ -25,6 +25,7 @@ data RequestUsernameResponse = UsernameAccepted | UsernameAlreadyTaken
 -- Possible messages sent to clients during chat
 data Chat = 
     ChatMessage Message
+    | Sync [Text]
     | ChatUserJoined UserJoined
     | ChatUserLeft UserLeft
     deriving (Generic, Show)

@@ -1,23 +1,17 @@
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Client.Lib where
 
 import qualified Messages.Server as SM
 import qualified Messages.Client as CM
-import Client.Core (Client(..))
+import Client.Core (Client(..), UiEvent (..))
 
 listenForMessage :: Client m => m ()
 listenForMessage = do
     msg <- recieveMessage
     case msg of
-        Nothing -> sendUserLine "Failed to decode Chat"
-        Just (SM.ChatMessage SM.Message { SM.fromUsername, SM.message }) -> 
-            sendUserLine (fromUsername <> ": " <> message)
-        Just (SM.ChatUserJoined SM.UserJoined { SM.usernameJoined }) -> 
-            sendUserLine (usernameJoined <> " joined")
-        Just (SM.ChatUserLeft SM.UserLeft { SM.usernameLeft }) -> 
-            sendUserLine (usernameLeft <> " left")
+        Nothing -> sendUiEvent $ ErrorEvent "Failed to decode Chat"
+        Just m -> sendUiEvent $ ChatEvent m
 
 readSendLoop :: Client m => m ()
 readSendLoop = do
@@ -27,17 +21,17 @@ readSendLoop = do
 
 requestUsernameHandler :: Client m => m ()
 requestUsernameHandler = do
-    sendUserLine "Please enter your name"
+    sendUiEvent $ SystemEvent "Please enter your name"
     username <- getUserLine
     sendMessage $ CM.RequestUsername username
     msg <- recieveMessage
     case msg of
         Nothing ->
-            sendUserLine "Failed to decode RequestUsernameResponse"
+            sendUiEvent $ ErrorEvent "Failed to decode RequestUsernameResponse"
         Just SM.UsernameAccepted -> 
-            sendUserLine $ "Username accepted, welcome to the chat " <> username <> "!"
+            sendUiEvent $ SystemEvent $ "Username accepted, welcome to the chat " <> username <> "!"
         Just SM.UsernameAlreadyTaken -> do
-            sendUserLine "Name already taken, please try again"
+            sendUiEvent $ SystemEvent "Name already taken, please try again"
             requestUsernameHandler
 
 connectedHandler :: Client m => m ()
@@ -45,6 +39,6 @@ connectedHandler = do
     msg <- recieveMessage
     case  msg of
         Nothing -> 
-            sendUserLine "Failed to decode user connected: "
+            sendUiEvent $ SystemEvent "Failed to decode user connected: "
         Just SM.RequestUsername ->
             requestUsernameHandler

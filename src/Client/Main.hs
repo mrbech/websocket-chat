@@ -6,7 +6,7 @@ import qualified Data.Maybe as Maybe
 import qualified System.Environment as Environment
 import Text.Read (readMaybe)
 import Control.Monad.Reader (forever, void, MonadReader(ask), MonadIO(liftIO), ReaderT(runReaderT))
-import Client.Core (UiClientCtx(..), ClientEnv, Client(..))
+import Client.Core (UiClientCtx(..), ClientEnv, Client(..), UiEvent(SystemEvent))
 import Client.Lib
 import qualified Client.Ui as Ui
 import qualified Brick.BChan as C
@@ -30,7 +30,7 @@ backgroundHandler = do
 
 mainHandler :: ClientEnv ()
 mainHandler = do
-    sendUserLine "Connected!"
+    sendUiEvent $ SystemEvent "Connected!"
 
     fork backgroundHandler
 

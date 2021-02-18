@@ -22,7 +22,10 @@ clientJoin = do
                 Just CM.RequestUsername { CM.username } -> do
                     success <- tryJoin username
                     if success then do
+                        users <- connectedUsers
                         sendMessage SM.UsernameAccepted
+                        broadcast $ SM.ChatUserJoined $ SM.UserJoined { SM.usernameJoined = username }
+                        sendMessage $ SM.Sync users
                         return $ Just username
                     else do
                         sendMessage SM.UsernameAlreadyTaken
