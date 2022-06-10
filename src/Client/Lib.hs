@@ -4,15 +4,20 @@
 module Client.Lib where
 
 import Client.Core (Client (..), UiEvent (..))
+import qualified Data.Text as Text
 import qualified Messages.Client as CM
 import qualified Messages.Server as SM
 
-listenForMessage :: Client m => m ()
+listenForMessage :: Client m => m Bool
 listenForMessage = do
   msg <- recieveMessage
   case msg of
-    Nothing -> sendUiEvent $ ErrorEvent "Failed to decode Chat"
-    Just m -> sendUiEvent $ ChatEvent m
+    Left s -> do
+      sendUiEvent $ ErrorEvent (Text.pack $ s <> "\nPlease try restarting client")
+      return False
+    Right m -> do
+      sendUiEvent $ ChatEvent m
+      return True
 
 readSendLoop :: Client m => m ()
 readSendLoop = do
@@ -27,11 +32,11 @@ requestUsernameHandler = do
   sendMessage $ CM.RequestUsername username
   msg <- recieveMessage
   case msg of
-    Nothing ->
-      sendUiEvent $ ErrorEvent "Failed to decode RequestUsernameResponse"
-    Just SM.UsernameAccepted ->
+    Left s ->
+      sendUiEvent $ ErrorEvent (Text.pack $ s <> "\nPlease try restarting client")
+    Right SM.UsernameAccepted ->
       sendUiEvent $ SystemEvent $ "Username accepted, welcome to the chat " <> username <> "!"
-    Just SM.UsernameAlreadyTaken -> do
+    Right SM.UsernameAlreadyTaken -> do
       sendUiEvent $ SystemEvent "Name already taken, please try again"
       requestUsernameHandler
 
@@ -39,7 +44,7 @@ connectedHandler :: Client m => m ()
 connectedHandler = do
   msg <- recieveMessage
   case msg of
-    Nothing ->
-      sendUiEvent $ SystemEvent "Failed to decode user connected: "
-    Just SM.RequestUsername ->
+    Left s ->
+      sendUiEvent $ SystemEvent (Text.pack s)
+    Right SM.RequestUsername ->
       requestUsernameHandler

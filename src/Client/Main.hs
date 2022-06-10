@@ -7,7 +7,7 @@ import Client.Core (Client (..), ClientEnv, UiClientCtx (..), UiEvent (SystemEve
 import Client.Lib
 import qualified Client.Ui as Ui
 import Control.Concurrent (forkIO)
-import Control.Monad.Reader (MonadIO (liftIO), MonadReader (ask), ReaderT (runReaderT), forever, void)
+import Control.Monad.Reader (MonadIO (liftIO), MonadReader (ask), ReaderT (runReaderT), void, when)
 import qualified Data.Maybe as Maybe
 import qualified Network.WebSockets as WS
 import qualified System.Environment as Environment
@@ -18,13 +18,18 @@ fork f = do
   ctx <- ask
   liftIO $ void $ forkIO $ runReaderT f ctx
 
+whileM :: Monad m => m Bool -> m ()
+whileM f = do
+  b <- f
+  when b (whileM f)
+
 backgroundHandler :: ClientEnv ()
 backgroundHandler = do
   {- Handle the initiation process, requesting username etc. -}
   connectedHandler
 
   {- Listen for messages in the background -}
-  fork (forever listenForMessage)
+  fork (whileM listenForMessage)
 
   {- Read and send message loop -}
   readSendLoop
