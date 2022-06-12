@@ -55,9 +55,9 @@ executables:
     dependencies:
     - websocket-chat
 
-  client-exe:
+  tui-client-exe:
     main:                Main.hs
-    source-dirs:         client
+    source-dirs:         tui-client
     ghc-options:
     - -threaded
     - -rtsopts

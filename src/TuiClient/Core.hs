@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Client.Core where
+module TuiClient.Core where
 
 import qualified Brick.BChan as C
 import Control.Exception (SomeException, catch, displayException)

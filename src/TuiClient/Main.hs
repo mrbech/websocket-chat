@@ -1,17 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Client.Main where
+module TuiClient.Main where
 
 import qualified Brick.BChan as C
-import Client.Core (Client (..), ClientEnv, UiClientCtx (..), UiEvent (SystemEvent))
-import Client.Lib
-import qualified Client.Ui as Ui
 import Control.Concurrent (forkIO)
 import Control.Monad.Reader (MonadIO (liftIO), MonadReader (ask), ReaderT (runReaderT), void, when)
 import qualified Data.Maybe as Maybe
 import qualified Network.WebSockets as WS
 import qualified System.Environment as Environment
 import Text.Read (readMaybe)
+import TuiClient.Core (Client (..), ClientEnv, UiClientCtx (..), UiEvent (SystemEvent))
+import TuiClient.Lib
+import qualified TuiClient.Ui as Ui
 
 fork :: ClientEnv () -> ClientEnv ()
 fork f = do

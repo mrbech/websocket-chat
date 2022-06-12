@@ -2,7 +2,7 @@
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Client.Ui where
+module TuiClient.Ui where
 
 import Brick (on)
 import qualified Brick as A
@@ -13,7 +13,6 @@ import qualified Brick.Widgets.Border as B
 import Brick.Widgets.Core ((<+>), (<=>))
 import qualified Brick.Widgets.Edit as E
 import qualified Brick.Widgets.List as L
-import Client.Core (ClientEnv, UiClientCtx (getEventChan, getInputChan), UiEvent (..))
 import Control.Monad (void)
 import Control.Monad.IO.Class (MonadIO (liftIO))
 import Control.Monad.Reader (asks)
@@ -22,6 +21,7 @@ import qualified Data.Vector as V
 import qualified Graphics.Vty
 import qualified Graphics.Vty as V
 import qualified Messages.Server as SM
+import TuiClient.Core (ClientEnv, UiClientCtx (getEventChan, getInputChan), UiEvent (..))
 
 data Names
   = Messages

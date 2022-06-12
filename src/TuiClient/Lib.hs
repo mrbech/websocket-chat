@@ -1,12 +1,12 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Client.Lib where
+module TuiClient.Lib where
 
-import Client.Core (Client (..), UiEvent (..))
 import qualified Data.Text as Text
 import qualified Messages.Client as CM
 import qualified Messages.Server as SM
+import TuiClient.Core (Client (..), UiEvent (..))
 
 listenForMessage :: Client m => m Bool
 listenForMessage = do

@@ -1,6 +1,6 @@
-.PHONY: server client
+.PHONY: server tui-client
 server:
 	stack run server-exe
 
-client:
-	stack run client-exe
+tui-client:
+	stack run tui-client-exe

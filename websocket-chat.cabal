@@ -25,16 +25,16 @@ source-repository head
 
 library
   exposed-modules:
-      Client.Core
-      Client.Lib
-      Client.Main
-      Client.Ui
       Messages.Client
       Messages.Server
       Server.Core
       Server.Lib
       Server.Log
       Server.Main
+      TuiClient.Core
+      TuiClient.Lib
+      TuiClient.Main
+      TuiClient.Ui
   other-modules:
       Paths_websocket_chat
   hs-source-dirs:
@@ -53,12 +53,12 @@ library
     , websockets ==0.12.*
   default-language: Haskell2010
 
-executable client-exe
+executable server-exe
   main-is: Main.hs
   other-modules:
       Paths_websocket_chat
   hs-source-dirs:
-      client
+      server
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aeson >=1.4 && <2
@@ -74,12 +74,12 @@ executable client-exe
     , websockets ==0.12.*
   default-language: Haskell2010
 
-executable server-exe
+executable tui-client-exe
   main-is: Main.hs
   other-modules:
       Paths_websocket_chat
   hs-source-dirs:
-      server
+      tui-client
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       aeson >=1.4 && <2
