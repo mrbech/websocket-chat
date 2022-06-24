@@ -1,19 +1,25 @@
 cradle:
-  stack:
-    - path: "./src"
-      component: "websocket-chat:lib"
+  cabal:
+    - path: "src"
+      component: "lib:websocket-chat"
 
-    - path: "./client/Main.hs"
-      component: "websocket-chat:exe:client-exe"
+    - path: "gui-client/Main.hs"
+      component: "websocket-chat:exe:gui-client-exe"
 
-    - path: "./client/Paths_websocket_chat.hs"
-      component: "websocket-chat:exe:client-exe"
+    - path: "gui-client/Paths_websocket_chat.hs"
+      component: "websocket-chat:exe:gui-client-exe"
 
-    - path: "./server/Main.hs"
+    - path: "server/Main.hs"
       component: "websocket-chat:exe:server-exe"
 
-    - path: "./server/Paths_websocket_chat.hs"
+    - path: "server/Paths_websocket_chat.hs"
       component: "websocket-chat:exe:server-exe"
 
-    - path: "./test"
+    - path: "tui-client/Main.hs"
+      component: "websocket-chat:exe:tui-client-exe"
+
+    - path: "tui-client/Paths_websocket_chat.hs"
+      component: "websocket-chat:exe:tui-client-exe"
+
+    - path: "test"
       component: "websocket-chat:test:websocket-chat-test"
