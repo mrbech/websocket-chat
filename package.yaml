@@ -23,13 +23,14 @@ dependencies:
 - base >= 4.7 && < 5
 - websockets >= 0.12 && < 0.13
 - containers >= 0.6 && < 1
-- text >= 1.2 && < 2
-- aeson >= 1.4 && < 2
+- text >= 1 && < 2
+- aeson >= 2 && < 3
 - bytestring >= 0.10 && < 1
 - mtl >= 2 && < 3
-- brick >= 0.50 && < 0.61
+- brick >= 0.70 && < 1
 - vty >= 5 && < 6
 - vector >= 0.12 && < 1
+- monomer >= 1.4 && < 2 
 
 
 library:
@@ -58,6 +59,16 @@ executables:
   tui-client-exe:
     main:                Main.hs
     source-dirs:         tui-client
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - websocket-chat
+
+  gui-client-exe:
+    main:                Main.hs
+    source-dirs:         gui-client
     ghc-options:
     - -threaded
     - -rtsopts

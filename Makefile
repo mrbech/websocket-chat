@@ -1,6 +1,14 @@
-.PHONY: server tui-client
-server:
-	stack run server-exe
+.PHONY: server tui-client gui-client
+server: build
+	cabal run server-exe
 
-tui-client:
-	stack run tui-client-exe
+tui-client: build
+	cabal run tui-client-exe
+
+gui-client: build
+	cabal run gui-client-exe
+
+build: websocket-chat.cabal
+
+websocket-chat.cabal: package.yaml
+	hpack
